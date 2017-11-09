@@ -24,6 +24,7 @@ namespace WpfSKBClientInformer
     {
         public MainWindow()
         {
+        
             InitializeComponent();
         }
 
