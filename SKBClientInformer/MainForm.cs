@@ -10,6 +10,7 @@ namespace ShevarvProject.SKBClientInformerNamespace
         public MainForm()
         {
             InitializeComponent();
+
         }
 
 
