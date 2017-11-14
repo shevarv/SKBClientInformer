@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ShevarvProject.SKBClientInformerDataBaseNamespace
 {
     /// <summary>
@@ -14,82 +15,99 @@ namespace ShevarvProject.SKBClientInformerDataBaseNamespace
         /// <summary>
         /// SQL запит
         /// </summary>
-        public string SqlSentense { get; set; }
+        public string SqlSentense { get; private set; }
 
         /// <summary>
         /// Секція SELECT SQL запиту 
         /// </summary>
-        public string SelColumn { get; set; }
+        public string SelColumn { get; private set; }
 
         /// <summary>
         /// Секція FROM SQL запиту 
         /// </summary>
-        public string FromTable { get; set; }
+        public string FromTable { get; private set; }
 
         /// <summary>
         /// Секція WHERE SQL запиту 
         /// </summary>
-        public string WhereCondition { get; set; }
+        public string WhereCondition { get; private set; }
 
         /// <summary>
         /// Секція ORDER SQL запиту 
         /// </summary>
-        public string OrderCondition { get; set; }
+        public string OrderCondition { get; private set; }
 
         /// <summary>
         /// Секція GROUP BY SQL запиту 
         /// </summary>
-        public string GroupCondition { get; set; }
+        public string GroupCondition { get; private set; }
 
         /// <summary>
         /// Властивість для запису та зчитування результатів SQL запиту
         /// </summary>
-        public DataTable Dt { get; set; }
+        public DataTable Dt { get; private set; }
 
-        public SqlExpression()
-        {
-            SelColumn = "";
-            FromTable = "";
-            WhereCondition = "";
-            OrderCondition = "";
-            GroupCondition = "";
-            SqlSentense = "";
-        }
+        //public SqlExpression()
+        //{
+        //    SelColumn = "";
+        //    FromTable = "";
+        //    WhereCondition = "";
+        //    OrderCondition = "";
+        //    GroupCondition = "";
+        //    SqlSentense = "";
+        //}
 
-        // Констуктор для формування SQL запит формату  SELECT .. FROM
-        public SqlExpression(string columns, string tables)
+        //// Констуктор для формування SQL запит формату  SELECT .. FROM
+        //public SqlExpression(string columns, string tables)
+        //{
+        //    SelColumn = columns;
+        //    FromTable = tables;
+        //    StringBuilder st = new StringBuilder(SqlSentense);
+        //    SqlSentense = st.Append(SelColumn).Append(FromTable).ToString();
+        //}
+
+        //// Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE
+        //public SqlExpression(string columns, string tables, string whereCond) : this(columns, tables)
+        //{
+        //    WhereCondition = whereCond;
+        //    StringBuilder st = new StringBuilder(SqlSentense);
+        //    SqlSentense = st.Append(WhereCondition).ToString();
+        //}
+
+        //// Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE .. ORDER BY
+        //public SqlExpression(string columns, string tables, string whereCond, string orderCond)
+        //    : this(columns, tables, whereCond)
+        //{
+        //    OrderCondition = orderCond;
+        //    StringBuilder st = new StringBuilder(SqlSentense);
+        //    SqlSentense = st.Append(OrderCondition).ToString();
+        //}
+
+        //// Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE .. ORDER BY .. GROUP BY
+        //public SqlExpression(string columns, string tables, string whereCond, string orderCond, string groupCond)
+        //    : this(columns, tables, whereCond, orderCond)
+        //{
+        //    GroupCondition = groupCond;
+        //    StringBuilder st = new StringBuilder(SqlSentense);
+        //    SqlSentense = st.Append(GroupCondition).ToString();
+        //}
+
+        public SqlExpression(string columns = "", string tables = "", string whereCond = "", string orderCond = "", string groupCond = "")
         {
             SelColumn = columns;
             FromTable = tables;
-            StringBuilder st = new StringBuilder(SqlSentense);
-            SqlSentense = st.Append(SelColumn).Append(FromTable).ToString();
-        }
-
-        // Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE
-        public SqlExpression(string columns, string tables, string whereCond) : this(columns, tables)
-        {
             WhereCondition = whereCond;
-            StringBuilder st = new StringBuilder(SqlSentense);
-            SqlSentense = st.Append(WhereCondition).ToString();
-        }
-
-        // Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE .. ORDER BY
-        public SqlExpression(string columns, string tables, string whereCond, string orderCond)
-            : this(columns, tables, whereCond)
-        {
             OrderCondition = orderCond;
-            StringBuilder st = new StringBuilder(SqlSentense);
-            SqlSentense = st.Append(OrderCondition).ToString();
+            GroupCondition = groupCond;
+            SqlSentense = "";
         }
 
-        // Констуктор для формування SQL запит формату  SELECT .. FROM .. WHERE .. ORDER BY .. GROUP BY
-        public SqlExpression(string columns, string tables, string whereCond, string orderCond, string groupCond)
-            : this(columns, tables, whereCond, orderCond)
+        private void SetSqlExp ()
         {
-            GroupCondition = groupCond;
-            StringBuilder st = new StringBuilder(SqlSentense);
-            SqlSentense = st.Append(GroupCondition).ToString();
+            StringBuilder st = new StringBuilder(SelColumn);
+            SqlSentense = st.Append(FromTable).Append(WhereCondition).Append(OrderCondition).Append(GroupCondition).ToString();
         }
+
 
         /// <summary>
         /// Формує SQL запит і передає його на виконання
@@ -98,25 +116,25 @@ namespace ShevarvProject.SKBClientInformerDataBaseNamespace
         /// <returns></returns>
         public async Task SelectData(params string[] selParams)
         {
-            string SelColumn = @"select a.client_id  as ""Код клієнта в СКБ"",
+            SelColumn = @"select a.client_id  as ""Код клієнта в СКБ"",
                                         b.client_ref as ""Код клієнта"", 
                                         b.short_name ""Назва клієнта"",
                                         a.wrk_access as ""Доступ"",
                                         a.pay_access as ""Платежі"",
                                         a.crypto_connect as ""Крипто"",
                                         a.note as ""Дод інформація""";
-            string FromTable = @" from usr_cbs_clients a , clnt_names_ b, clnt_key_par t";
-            string WhereCondition = @" where a.odb_ref = b.client_ref and b.client_ref=t.client_ref and t.par_type in ('TIN','OKPO')";
+            FromTable = @" from usr_cbs_clients a , clnt_names_ b, clnt_key_par t";
+            WhereCondition = @" where a.odb_ref = b.client_ref and b.client_ref=t.client_ref and t.par_type in ('TIN','OKPO')";
 
             if (selParams[0] != "") WhereCondition += " and b.client_ref=" + selParams[0];
             if (selParams[1] != "") WhereCondition += " and UPPER(b.short_name) like '%" + selParams[1].ToUpper() + "%'";
             if (selParams[2] != "") WhereCondition += " and t.par_value='" + selParams[2] + "'";
             if (selParams[3] != "") WhereCondition += " and a.client_id=" + selParams[3];
 
-            string OrderCondition = " order by b.client_ref";
-            SqlExpression sqlExp = new SqlExpression(SelColumn, FromTable, WhereCondition, OrderCondition);
+            OrderCondition = " order by b.client_ref";
+            SetSqlExp();
             DataBase db = new DataBase("ODB", "opcbank", "bankopc11");
-            Dt = await db.SelectDataTableAsync(sqlExp);
+            Dt = await db.SelectDataTableAsync(this);
         }
 
     }
