@@ -9,7 +9,7 @@ using Oracle.ManagedDataAccess.Client;
 namespace ShevarvProject.SKBClientInformerDataBaseNamespace
 {
     /// <summary>
-    /// Клас для констроювання SQL запиту до бази даних
+    /// Клас для констроювання SQL запиту до БД
     /// </summary>
     public class SqlExpression
     {
