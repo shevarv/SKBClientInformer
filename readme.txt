@@ -1,1 +1,1 @@
-This is my new project hotfix
+This is my new project master
