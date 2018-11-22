@@ -11,7 +11,8 @@ namespace SCBFilesCopier
 {
     public class SCBFiles
     {
-        public int Copy (string source, string destination)
+        //Функція копіювання
+	public int Copy (string source, string destination)
         {
             try
             {
